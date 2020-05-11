@@ -442,6 +442,7 @@ p#Death.values {
 #circle-label {
   z-index: 100000;
 }
+
 #menuIcon {
   display: none;
   margin-right: 10px;
