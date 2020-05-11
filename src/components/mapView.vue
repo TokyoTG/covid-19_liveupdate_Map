@@ -3,11 +3,13 @@
     <div
       v-if="!infectedStates || !totalCases || !statesGeojson"
       style="position:relative;"
-    >Loading map please wait</div>
+    >Loading map please wait...</div>
     <div v-if="infectedStates && totalCases && statesGeojson">
       <span id="menuIcon" @click="displayMenu">&#9776;</span>
       <div id="map">
         <div id="map-container">
+          <l-control-layers position="topright"></l-control-layers>
+
           <l-map :zoom="zoom" :center="center" ref="myMap">
             <l-marker
               v-for="(centroid) in preparedCentroids"
@@ -55,6 +57,19 @@
               <div class="headline">{{centroid.properties.infectionData.No_of_cases}}</div>
             </l-icon>
             </l-marker>-->
+
+            <l-control position="bottomright">
+              <div class="legend info">
+                <h3>Legend</h3>
+                <div v-for="(grade,index) in grades" :key="index">
+                  <p :style="getColor(grade)"></p>
+                  <span v-if="grade == 'no case'">No Cases</span>
+                  <span
+                    v-if="grade != 'no case'"
+                  >{{grade}} - {{grades[index+1] ? grades[index+1]:'Above'}}</span>
+                </div>
+              </div>
+            </l-control>
           </l-map>
         </div>
 
@@ -63,18 +78,6 @@
             <label for="item.categories">{{item.categories}}</label>
             <p :id="item.categories.split(' ').join('')" class="values">{{item.values}}</p>
           </div>
-          <!-- <div class="categories">
-          <label for="confirmed">Confirmed Cases</label>
-          <p class="values" id="confirmed">300</p>
-        </div>
-        <div class="categories">
-          <label for="discharged">Discharged Cases</label>
-          <p class="values" id="discharged">745</p>
-        </div>
-        <div class="categories">
-          <label for="death">Death</label>
-          <p class="values" id="death">128</p>
-          </div>-->
         </div>
       </div>
     </div>
@@ -85,12 +88,30 @@
 <script>
 import $ from "jquery";
 import L from "leaflet";
-import { LMap, LMarker, LGeoJson, LIcon } from "vue2-leaflet";
+import {
+  LMap,
+  LMarker,
+  LGeoJson,
+  LIcon,
+  LControlLayers,
+  LControl
+} from "vue2-leaflet";
 import { mapState } from "vuex";
 export default {
   data() {
     return {
       zoom: 6,
+      legends: [
+        "#c8e6c9",
+        "#FED976",
+        "#FEB24C",
+        "#FD8D3C",
+        "#FC4E2A",
+        "#E31A1C",
+        "#f44336",
+        "#d50000"
+      ],
+      grades: ["no case", "0", "10", "20", "50", "100", "200", "500", "1000"],
       menuOpen: false,
       fillColor: "#e57373",
       centroids: null,
@@ -118,7 +139,7 @@ export default {
                 d.properties.cases != null &&
                 d.properties.cases != undefined
               ) {
-                console.log(d.properties.cases);
+                // console.log(d.properties.cases);
                 if (d.properties.cases > 1000) {
                   return "#d50000";
                 }
@@ -139,6 +160,9 @@ export default {
                 }
                 if (d.properties.cases > 10) {
                   return "#FED976";
+                }
+                if (d.properties.cases == 0) {
+                  return "#c8e6c9";
                 } else {
                   return "#FFEDA0";
                 }
@@ -169,18 +193,6 @@ export default {
               {
                 maxHeight: 200
               }
-              //   Object.keys(
-              //     this.getStateCaseDetails(feature.properties.NAME_1)[0]
-              //   )
-              //     .map(k => {
-              //       if (feature.properties[k]) {
-              //         return k + ": " + feature.properties[k] + "<br />";
-              //       }
-              //     })
-              //     .join(""),
-              //   {
-              //     maxHeight: 200
-              //   }
             );
             layer.on({
               click: function(e) {
@@ -200,16 +212,32 @@ export default {
     ...mapState(["buildings"]),
     preparedCentroids: function() {
       let currentState;
+      let obj;
       let arr = [];
       if (this.centroids && this.infectedStates) {
         for (let centroid of this.centroids.features) {
           currentState = this.infectedStates.filter(element => {
             return element.States.trim() == centroid.properties.NAME_1.trim();
           });
+
           if (currentState.length) {
             centroid.properties.infectionData = currentState;
-            arr.push(centroid);
+          } else {
+            obj = [
+              {
+                id: 1,
+                States: "",
+                No_of_cases: "0",
+                No_on_admission: "0",
+                No_discharged: "0",
+                No_of_deaths: "0",
+                cases: "0"
+              }
+            ];
+            obj[0].States = centroid.properties.NAME_1;
+            centroid.properties.infectionData = obj;
           }
+          arr.push(centroid);
           currentState = [];
         }
       }
@@ -217,6 +245,7 @@ export default {
     },
     preparedSatesCases: function() {
       let currentState;
+      let obj;
       let arr = [];
       if (this.statesGeojson && this.infectedStates) {
         for (let centroid of this.statesGeojson.features) {
@@ -237,11 +266,21 @@ export default {
             };
 
             currentState[0].cases = formatted();
+            centroid.properties = currentState[0];
+          } else {
+            obj = {
+              id: 1,
+              States: "",
+              No_of_cases: "0",
+              No_on_admission: "0",
+              No_discharged: "0",
+              No_of_deaths: "0",
+              cases: "0"
+            };
+            obj.States = centroid.properties.NAME_1.trim();
+            centroid.properties = obj;
           }
-          centroid.properties = currentState[0];
           arr.push(centroid);
-          //   }
-          //   currentState = [];
         }
       }
       return arr;
@@ -252,7 +291,9 @@ export default {
     LMap,
     LMarker,
     LGeoJson,
-    LIcon
+    LIcon,
+    LControlLayers,
+    LControl
   },
   filters: {
     radius: function(value) {
@@ -267,6 +308,22 @@ export default {
           return data;
         }
       );
+    },
+    getColor(value) {
+      let text;
+      let grades = {
+        "0": "#FFEDA0",
+        "no case": "#c8e6c9",
+        "10": "#FED976",
+        "20": "#FEB24C",
+        "50": "#FD8D3C",
+        "100": "#FC4E2A",
+        "200": "#E31A1C",
+        "500": "#f44336",
+        "1000": "#d50000"
+      };
+      text = `background:${grades[value]}`;
+      return text;
     },
     getStateCaseDetails(state) {
       if (this.infectedStates) {
@@ -335,7 +392,7 @@ export default {
     displayMenu() {
       let menu = document.getElementById("cases");
       if (!this.menuOpen) {
-        menu.style.width = "250px";
+        menu.style.width = "200px";
         this.menuOpen = true;
       } else {
         menu.style.width = "0";
@@ -377,6 +434,7 @@ export default {
 .headline {
   font-size: 0.9em;
   /* font-weight: bold; */
+  padding: 5px 10px;
   color: white;
 }
 
@@ -408,6 +466,36 @@ p#Death.values {
 }
 p#DischargedCases.values {
   color: green;
+}
+
+.legend {
+  line-height: 18px;
+  overflow: hidden;
+  width: 150px;
+  color: #555;
+}
+.legend div {
+  height: 18px;
+  float: left;
+  margin-right: 8px;
+  opacity: 0.7;
+}
+.legend div span {
+  margin-left: 5px;
+}
+.legend div p {
+  width: 18px;
+  display: inline-block;
+  height: 18px;
+}
+
+.info {
+  padding: 6px 8px;
+  font: 14px/16px Arial, Helvetica, sans-serif;
+  background: white;
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
 }
 @media only screen and (max-width: 650px) {
   #cases {

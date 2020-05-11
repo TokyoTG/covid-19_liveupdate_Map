@@ -28,7 +28,7 @@
 { "type": "Feature", "properties": { "ID_0": 164, "ID_1": 2038, "NAME_1": "Kogi", "HASC_1": "NG.KO" }, "geometry": { "type": "Point", "coordinates": [ 6.696041997129693, 7.716356484366564 ] } },
 { "type": "Feature", "properties": { "ID_0": 164, "ID_1": 2039, "NAME_1": "Kwara", "HASC_1": "NG.KW" }, "geometry": { "type": "Point", "coordinates": [ 4.372564894380326, 8.982546218326128 ] } },
 { "type": "Feature", "properties": { "ID_0": 164, "ID_1": 2040, "NAME_1": "Lagos", "HASC_1": "NG.LA" }, "geometry": { "type": "Point", "coordinates": [ 3.564947192217992, 6.527058242360489 ] } },
-{ "type": "Feature", "properties": { "ID_0": 164, "ID_1": 2041, "NAME_1": "Nassarawa", "HASC_1": "NG.NA" }, "geometry": { "type": "Point", "coordinates": [ 8.187252553438887, 8.498861029752439 ] } },
+{ "type": "Feature", "properties": { "ID_0": 164, "ID_1": 2041, "NAME_1": "Nasarawa", "HASC_1": "NG.NA" }, "geometry": { "type": "Point", "coordinates": [ 8.187252553438887, 8.498861029752439 ] } },
 { "type": "Feature", "properties": { "ID_0": 164, "ID_1": 2042, "NAME_1": "Niger", "HASC_1": "NG.NI" }, "geometry": { "type": "Point", "coordinates": [ 5.601163579004291, 9.935978672296041 ] } },
 { "type": "Feature", "properties": { "ID_0": 164, "ID_1": 2043, "NAME_1": "Ogun", "HASC_1": "NG.OG" }, "geometry": { "type": "Point", "coordinates": [ 3.467048477759791, 7.001702301285147 ] } },
 { "type": "Feature", "properties": { "ID_0": 164, "ID_1": 2044, "NAME_1": "Ondo", "HASC_1": "NG.ON" }, "geometry": { "type": "Point", "coordinates": [ 5.156999933698423, 6.908722002530785 ] } },
