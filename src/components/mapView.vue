@@ -363,6 +363,7 @@ export default {
         method: "GET",
         headers: {
           "x-rapidapi-host": "nigeria-covid-19.p.rapidapi.com",
+          "Access-Control-Allow-Origin": "*",
           "x-rapidapi-key": "125fed27d4msh77f960416e3a340p11b4edjsn65a7e81213e2"
         }
       };
