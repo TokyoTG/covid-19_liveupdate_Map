@@ -5,7 +5,11 @@
       style="position:relative;"
     >Loading map please wait...</div>
     <div v-if="infectedStates && totalCases && statesGeojson">
-      <span id="menuIcon" @click="displayMenu">&#9776;</span>
+      <h2>THEMATIC MAP SHOWING COVID-19 CASES IN NIGERIA</h2>
+      <span id="menuIcon" @click="displayMenu">
+        <span v-if="!menuOpen">&#9776;</span>
+        <span v-if="menuOpen">X</span>
+      </span>
       <div id="map">
         <div id="map-container">
           <l-control-layers position="topright"></l-control-layers>
@@ -35,29 +39,6 @@
               :layerType="layertype"
               :name="layername"
             ></l-geo-json>
-            <!-- <l-circle
-              v-for="(centroid,index) in preparedCentroids"
-              :key="index"
-              :lat-lng="[centroid.geometry.coordinates[1],centroid.geometry.coordinates[0]]"
-              :radius="prepareRadius(centroid.properties.infectionData[0].No_of_cases)"
-              :color="circle.color"
-              :weight="0.5"
-              :attribution="circle.name"
-              :fillColor="fillColor"
-              :className="circle.name"
-            ></l-circle>
-
-            <l-circle />-->
-            <!-- <l-marker
-            v-for="(centroid,index) in preparedCentroids"
-            :key="index"
-            :lat-lng="[centroid.geometry.coordinates[1],centroid.geometry.coordinates[0]]"
-          >
-            <l-icon class-name="someExtraClass">
-              <div class="headline">{{centroid.properties.infectionData.No_of_cases}}</div>
-            </l-icon>
-            </l-marker>-->
-
             <l-control position="bottomright">
               <div class="legend info">
                 <h3>Legend</h3>
@@ -463,6 +444,8 @@ p#Death.values {
 }
 #menuIcon {
   display: none;
+  margin-right: 10px;
+  transition: 0.3s;
 }
 p#DischargedCases.values {
   color: green;
