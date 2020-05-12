@@ -1,5 +1,5 @@
 module.exports = {
   devServer: {
-    proxy: "https://covid19-liveupdate.herokuapp.com/",
+    proxy: "https://nigeria-covid-19.p.rapidapi.com/api/",
   },
 };
