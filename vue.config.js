@@ -1,5 +1,5 @@
 module.exports = {
-  devServer: {
-    proxy: "https://nigeria-covid-19.p.rapidapi.com/api/",
-  },
+  //   devServer: {
+  //     proxy: "http://localhost:8080/",
+  //   },
 };

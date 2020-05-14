@@ -12,8 +12,6 @@
       </span>
       <div id="map">
         <div id="map-container">
-          <l-control-layers position="topright"></l-control-layers>
-
           <l-map :zoom="zoom" :center="center" ref="myMap">
             <l-marker
               v-for="(centroid) in preparedCentroids"
@@ -69,14 +67,7 @@
 <script>
 import $ from "jquery";
 import L from "leaflet";
-import {
-  LMap,
-  LMarker,
-  LGeoJson,
-  LIcon,
-  LControlLayers,
-  LControl
-} from "vue2-leaflet";
+import { LMap, LMarker, LGeoJson, LIcon, LControl } from "vue2-leaflet";
 import { mapState } from "vuex";
 export default {
   data() {
@@ -273,7 +264,6 @@ export default {
     LMarker,
     LGeoJson,
     LIcon,
-    LControlLayers,
     LControl
   },
   filters: {
@@ -342,7 +332,8 @@ export default {
       let settings = {
         async: true,
         crossDomain: true,
-        url: "https://nigeria-covid-19.p.rapidapi.com/api/states",
+        url:
+          "https://cors-anywhere.herokuapp.com/https://nigeria-covid-19.p.rapidapi.com/api/states",
         method: "GET",
         headers: {
           "x-rapidapi-host": "nigeria-covid-19.p.rapidapi.com",
@@ -350,6 +341,24 @@ export default {
           "x-rapidapi-key": "125fed27d4msh77f960416e3a340p11b4edjsn65a7e81213e2"
         }
       };
+      // await axios({
+      //   method: "GET",
+      //   url: "https://nigeria-covid-19.p.rapidapi.com/api/states",
+      //   headers: {
+      //     "content-type": "application/octet-stream",
+      //     "x-rapidapi-host": "nigeria-covid-19.p.rapidapi.com",
+      //     "x-rapidapi-key":
+      //       "125fed27d4msh77f960416e3a340p11b4edjsn65a7e81213e2",
+      //     useQueryString: true
+      //   }
+      // })
+      //   .then(response => {
+      //     console.log(response);
+      //     this.infectedStates = response.data;
+      //   })
+      //   .catch(error => {
+      //     console.log(error);
+      //   });
 
       this.infectedStates = await $.ajax(settings).done(function(response) {
         return response;
@@ -359,7 +368,8 @@ export default {
       let settings = {
         async: true,
         crossDomain: true,
-        url: "https://nigeria-covid-19.p.rapidapi.com/api/confirmed",
+        url:
+          "https://cors-anywhere.herokuapp.com/https://nigeria-covid-19.p.rapidapi.com/api/confirmed",
         method: "GET",
         headers: {
           "x-rapidapi-host": "nigeria-covid-19.p.rapidapi.com",
