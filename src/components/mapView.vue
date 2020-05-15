@@ -5,14 +5,14 @@
       style="position:relative;"
     >Loading map please wait...</div>
     <div v-if="infectedStates && totalCases && statesGeojson">
-      <h2>THEMATIC MAP SHOWING COVID-19 CASES IN NIGERIA</h2>
+      <h4>THEMATIC MAP SHOWING COVID-19 CASES IN NIGERIA</h4>
       <span id="menuIcon" @click="displayMenu">
         <span v-if="!menuOpen">&#9776;</span>
         <span v-if="menuOpen">X</span>
       </span>
       <div id="map">
         <div id="map-container">
-          <l-map :zoom="zoom" :center="center" ref="myMap">
+          <l-map :zoom="zoom" :center="center" ref="myMap" @update:bounds="boundsUpdated">
             <l-marker
               v-for="(centroid) in preparedCentroids"
               :key="centroid.properties.infectionData[0].States"
@@ -73,6 +73,7 @@ export default {
   data() {
     return {
       zoom: 6,
+      bounds: null,
       legends: [
         "#c8e6c9",
         "#FED976",
@@ -86,7 +87,7 @@ export default {
       grades: ["no case", "0", "10", "20", "50", "100", "200", "500", "1000"],
       menuOpen: false,
       fillColor: "#e57373",
-      centroids: null,
+      centroids: JSON.parse(localStorage.getItem("centroids")) || null,
       circle: {
         centre: [9.26839376255459, 7.558593750000001],
         radius: 4500,
@@ -94,15 +95,16 @@ export default {
         color: "white"
       },
       layertype: "polygon",
-      infectedStates: null,
-      totalCases: null,
+      infectedStates:
+        JSON.parse(localStorage.getItem("infectedStates")) || null,
+      totalCases: JSON.parse(localStorage.getItem("totalCases")) || null,
       layername: "Unilorin Buildings",
       center: L.latLng(9.26839376255459, 7.558593750000001),
       url: "http://{s}.tile.osm.org/{z}/{x}/{y}.png",
       attribution:
         '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
       marker: L.latLng(9.26839376255459, 7.558593750000001),
-      statesGeojson: null,
+      statesGeojson: JSON.parse(localStorage.getItem("nigeriaStates")) || null,
       options: {
         style: function(feature) {
           let fillColors = d => {
@@ -168,11 +170,19 @@ export default {
             );
             layer.on({
               click: function(e) {
-                let arr, latlong;
-                latlong = [e.latlng.lat, e.latlng.lng];
-                arr = feature.properties.NAME_1;
-                console.log(arr);
-                console.log(latlong);
+                // this.bounds = e.target.getBounds();
+                // let barr;
+                // let arr = [];
+                // for (let key in bound) {
+                //   barr = [];
+                //   if (bound[key].lat) {
+                //     barr.push(bound[key].lat, bound[key].lng);
+                //     arr.push(barr);
+                //   }
+                // }
+                // this.bounds = arr;
+                // this.boundsUpdated(e.target.getBounds());
+                console.log(e.target.getBounds());
               }
             });
           }
@@ -272,10 +282,14 @@ export default {
     }
   },
   methods: {
+    boundsUpdated(bounds) {
+      this.bounds = bounds;
+    },
     async getGeojson() {
       this.statesGeojson = await $.getJSON(
         "./Nigerian_States.geojson",
         function(data) {
+          localStorage.setItem("nigeriaStates", JSON.stringify(data));
           return data;
         }
       );
@@ -325,6 +339,7 @@ export default {
       this.centroids = await $.getJSON("./states_centroids.geojson", function(
         data
       ) {
+        localStorage.setItem("centroids", JSON.stringify(data));
         return data;
       });
     },
@@ -341,26 +356,8 @@ export default {
           "x-rapidapi-key": "125fed27d4msh77f960416e3a340p11b4edjsn65a7e81213e2"
         }
       };
-      // await axios({
-      //   method: "GET",
-      //   url: "https://nigeria-covid-19.p.rapidapi.com/api/states",
-      //   headers: {
-      //     "content-type": "application/octet-stream",
-      //     "x-rapidapi-host": "nigeria-covid-19.p.rapidapi.com",
-      //     "x-rapidapi-key":
-      //       "125fed27d4msh77f960416e3a340p11b4edjsn65a7e81213e2",
-      //     useQueryString: true
-      //   }
-      // })
-      //   .then(response => {
-      //     console.log(response);
-      //     this.infectedStates = response.data;
-      //   })
-      //   .catch(error => {
-      //     console.log(error);
-      //   });
-
       this.infectedStates = await $.ajax(settings).done(function(response) {
+        localStorage.setItem("infectedStates", JSON.stringify(response));
         return response;
       });
     },
@@ -379,6 +376,7 @@ export default {
       };
 
       this.totalCases = await $.ajax(settings).done(function(response) {
+        localStorage.setItem("totalCases", JSON.stringify(response));
         return response;
       });
     },
@@ -393,10 +391,13 @@ export default {
       }
     }
   },
+
+  async mounted() {
+    this.getStates();
+    this.getCentroidGeojson();
+  },
   async created() {
     this.getGeojson();
-    this.getCentroidGeojson();
-    this.getStates();
     this.confirmedTotal();
   }
 };

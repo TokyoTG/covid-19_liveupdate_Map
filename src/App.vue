@@ -1,8 +1,11 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link to="/">Home</router-link>|
+      <h5>
+        <img src="../public/Nigeria_flag_map.png" alt height="30" width="30" /> COVID-19 LIVEUPDATE
+      </h5>
       <router-link to="/about">About</router-link>
+      <router-link to="/">Home</router-link>
     </div>
     <router-view />
   </div>
@@ -15,18 +18,43 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   margin: 0;
+
   color: #2c3e50;
+  /* color: white; */
 }
 
 #nav {
-  padding: 30px;
+  padding: 10px 15px;
   margin: 0;
+  padding: 0;
+  text-align: left;
+
+  overflow: hidden;
+  background: #81c784;
+  margin-bottom: 10px;
 }
 #nav a {
   font-weight: bold;
-  color: #2c3e50;
+  margin-right: 10px;
+  float: right;
+  color: #1b5e20;
+  /* margin-top: 10px; */
+  text-decoration: none;
+  display: block;
+  padding: 20px 15px;
+}
+#nav h5 {
+  font-size: 0.9em;
+  box-sizing: border-box;
+  display: inline-block;
+  margin: 0;
+  color: white;
+  padding: 0;
+  padding: 10px 15px;
 }
 #nav .router-link-exact-active {
-  color: #42b983;
+  color: white;
+  background: #455a64;
+  /* text-decoration: underline; */
 }
 </style>
