@@ -68,6 +68,12 @@
   background: #455a64;
   /* text-decoration: underline; */
 }
+body {
+  /* background: #455a64; */
+  margin: 0;
+  padding: 0;
+}
+
 @media only screen and (max-width: 650px) {
   .nav-text {
     display: none;
