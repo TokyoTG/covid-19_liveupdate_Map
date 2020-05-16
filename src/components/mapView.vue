@@ -35,12 +35,8 @@
               :options="options"
               :layerType="layertype"
               :name="layername"
-              :attribution="attribution"
             ></l-geo-json>
-            <l-control-attribution
-              position="topright"
-              prefix="THEMATIC MAP SHOWING COVID-19 CASES IN NIGERIA"
-            ></l-control-attribution>
+            <l-control-attribution position="topright" prefix="THEMATIC MAP OF COVID-19 CASES"></l-control-attribution>
             <l-control position="bottomright">
               <div class="legend info">
                 <h3>Legend</h3>
@@ -418,8 +414,8 @@ export default {
 .loader-container {
   text-align: center;
   position: absolute;
-  top: 55%;
-  left: 45%;
+  top: 50%;
+  left: 50%;
   transform: translate(-50%, -50%);
 }
 
