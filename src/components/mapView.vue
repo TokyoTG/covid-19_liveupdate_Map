@@ -57,6 +57,7 @@
             <label for="item.categories">{{item.categories}}</label>
             <p :id="item.categories.split(' ').join('')" class="values">{{item.values}}</p>
           </div>
+          <p id="viewDate">As at {{viewDate}}</p>
         </div>
       </div>
     </div>
@@ -198,6 +199,10 @@ export default {
     };
   },
   computed: {
+    viewDate: function() {
+      let d = new Date();
+      return d.toUTCString();
+    },
     ...mapState(["buildings"]),
     preparedCentroids: function() {
       let currentState;
@@ -420,8 +425,8 @@ export default {
 }
 
 .loader {
-  border: 16px solid #455a64; /* Light grey */
-  border-top: 16px solid #81c784; /* Blue */
+  border: 13px solid #455a64; /* Light grey */
+  border-top: 13px solid #81c784; /* Blue */
   border-radius: 50%;
   width: 120px;
   display: inline-block;
@@ -459,7 +464,7 @@ export default {
 }
 
 #cases {
-  background: dimgray;
+  background: #455a64;
   z-index: 30000;
   color: white;
   transition: 0.5s;
@@ -519,6 +524,10 @@ p#DischargedCases.values {
   background: rgba(255, 255, 255, 0.8);
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
   border-radius: 5px;
+}
+
+#viewDate {
+  margin-top: 15px;
 }
 
 @media only screen and (max-width: 650px) {
