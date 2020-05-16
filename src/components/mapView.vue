@@ -5,7 +5,6 @@
       style="position:relative;"
     >Loading map please wait...</div>
     <div v-if="infectedStates && totalCases && statesGeojson">
-      <h4>THEMATIC MAP SHOWING COVID-19 CASES IN NIGERIA</h4>
       <span id="menuIcon" @click="displayMenu">
         <span v-if="!menuOpen">&#9776;</span>
         <span v-if="menuOpen">X</span>
@@ -25,18 +24,17 @@
                 </div>
               </l-icon>
             </l-marker>
-            <!-- <l-geo-json
-              :geojson="statesGeojson"
-              :options="options"
-              :layerType="layertype"
-              :name="layername"
-            ></l-geo-json>-->
             <l-geo-json
               :geojson="preparedSatesCases"
               :options="options"
               :layerType="layertype"
               :name="layername"
+              :attribution="attribution"
             ></l-geo-json>
+            <l-control-attribution
+              position="topright"
+              prefix="THEMATIC MAP SHOWING COVID-19 CASES IN NIGERIA"
+            ></l-control-attribution>
             <l-control position="bottomright">
               <div class="legend info">
                 <h3>Legend</h3>
@@ -67,7 +65,14 @@
 <script>
 import $ from "jquery";
 import L from "leaflet";
-import { LMap, LMarker, LGeoJson, LIcon, LControl } from "vue2-leaflet";
+import {
+  LMap,
+  LMarker,
+  LGeoJson,
+  LIcon,
+  LControl,
+  LControlAttribution
+} from "vue2-leaflet";
 import { mapState } from "vuex";
 export default {
   data() {
@@ -80,11 +85,11 @@ export default {
         "#FEB24C",
         "#FD8D3C",
         "#FC4E2A",
-        "#E31A1C",
         "#f44336",
+        "#E31A1C",
         "#d50000"
       ],
-      grades: ["no case", "0", "10", "20", "50", "100", "200", "500", "1000"],
+      grades: ["no case", "1", "10", "20", "50", "100", "200", "500", "1000"],
       menuOpen: false,
       fillColor: "#e57373",
       centroids: JSON.parse(localStorage.getItem("centroids")) || null,
@@ -101,8 +106,9 @@ export default {
       layername: "Unilorin Buildings",
       center: L.latLng(9.26839376255459, 7.558593750000001),
       url: "http://{s}.tile.osm.org/{z}/{x}/{y}.png",
-      attribution:
-        '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+      attribution: `<a
+            href="https://rapidapi.com/Mastersam07/api/nigeria-covid-19"
+          >Mastersam07 Nigeria-covid-19 API</a>`,
       marker: L.latLng(9.26839376255459, 7.558593750000001),
       statesGeojson: JSON.parse(localStorage.getItem("nigeriaStates")) || null,
       options: {
@@ -118,10 +124,10 @@ export default {
                   return "#d50000";
                 }
                 if (d.properties.cases > 500) {
-                  return "#f44336";
+                  return "#E31A1C";
                 }
                 if (d.properties.cases > 200) {
-                  return "#E31A1C";
+                  return "#f44336";
                 }
                 if (d.properties.cases > 100) {
                   return "#FC4E2A";
@@ -229,7 +235,7 @@ export default {
       let currentState;
       let obj;
       let arr = [];
-      if (this.statesGeojson && this.infectedStates) {
+      if (this.statesGeojson != undefined && this.infectedStates != undefined) {
         for (let centroid of this.statesGeojson.features) {
           currentState = this.infectedStates.filter(element => {
             return element.States.trim() == centroid.properties.NAME_1.trim();
@@ -274,7 +280,8 @@ export default {
     LMarker,
     LGeoJson,
     LIcon,
-    LControl
+    LControl,
+    LControlAttribution
   },
   filters: {
     radius: function(value) {
@@ -297,14 +304,14 @@ export default {
     getColor(value) {
       let text;
       let grades = {
-        "0": "#FFEDA0",
+        "1": "#FFEDA0",
         "no case": "#c8e6c9",
         "10": "#FED976",
         "20": "#FEB24C",
         "50": "#FD8D3C",
         "100": "#FC4E2A",
-        "200": "#E31A1C",
-        "500": "#f44336",
+        "200": "#f44336",
+        "500": "#E31A1C",
         "1000": "#d50000"
       };
       text = `background:${grades[value]}`;
@@ -494,6 +501,7 @@ p#DischargedCases.values {
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
   border-radius: 5px;
 }
+
 @media only screen and (max-width: 650px) {
   #cases {
     overflow: hidden;
@@ -510,6 +518,8 @@ p#DischargedCases.values {
   }
   #menuIcon {
     display: block;
+    width: 50px;
+
     text-align: right;
     font-size: 2.5em;
     cursor: pointer;

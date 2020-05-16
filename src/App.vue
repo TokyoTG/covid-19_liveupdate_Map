@@ -4,8 +4,14 @@
       <h5>
         <img src="../public/Nigeria_flag_map.png" alt height="30" width="30" /> COVID-19 LIVEUPDATE
       </h5>
-      <router-link to="/about">About</router-link>
-      <router-link to="/">Home</router-link>
+      <router-link to="/about">
+        <i class="fas fa-list"></i>
+        <span class="nav-text">About</span>
+      </router-link>
+      <router-link to="/">
+        <i class="fas fa-home"></i>
+        <span class="nav-text">Home</span>
+      </router-link>
     </div>
     <router-view />
   </div>
@@ -21,6 +27,11 @@
 
   color: #2c3e50;
   /* color: white; */
+}
+
+#app .fas {
+  font-size: 1.1em;
+  margin-right: 5px;
 }
 
 #nav {
@@ -56,5 +67,13 @@
   color: white;
   background: #455a64;
   /* text-decoration: underline; */
+}
+@media only screen and (max-width: 650px) {
+  .nav-text {
+    display: none;
+  }
+  #app .fas {
+    font-size: 1.3em;
+  }
 }
 </style>
