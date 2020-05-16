@@ -3,7 +3,13 @@
     <div
       v-if="!infectedStates || !totalCases || !statesGeojson"
       style="position:relative;"
-    >Loading map please wait...</div>
+      id="loading"
+    >
+      Loading map please wait...
+      <div class="loader-container">
+        <div class="loader"></div>
+      </div>
+    </div>
     <div v-if="infectedStates && totalCases && statesGeojson">
       <span id="menuIcon" @click="displayMenu">
         <span v-if="!menuOpen">&#9776;</span>
@@ -92,7 +98,7 @@ export default {
       grades: ["no case", "1", "10", "20", "50", "100", "200", "500", "1000"],
       menuOpen: false,
       fillColor: "#e57373",
-      centroids: JSON.parse(localStorage.getItem("centroids")) || null,
+      centroids: null,
       circle: {
         centre: [9.26839376255459, 7.558593750000001],
         radius: 4500,
@@ -100,17 +106,16 @@ export default {
         color: "white"
       },
       layertype: "polygon",
-      infectedStates:
-        JSON.parse(localStorage.getItem("infectedStates")) || null,
-      totalCases: JSON.parse(localStorage.getItem("totalCases")) || null,
+      infectedStates: null,
+      totalCases: null,
       layername: "Unilorin Buildings",
       center: L.latLng(9.26839376255459, 7.558593750000001),
       url: "http://{s}.tile.osm.org/{z}/{x}/{y}.png",
       attribution: `<a
             href="https://rapidapi.com/Mastersam07/api/nigeria-covid-19"
-          >Mastersam07 Nigeria-covid-19 API</a>`,
+          >Mastersam07</a>`,
       marker: L.latLng(9.26839376255459, 7.558593750000001),
-      statesGeojson: JSON.parse(localStorage.getItem("nigeriaStates")) || null,
+      statesGeojson: null,
       options: {
         style: function(feature) {
           let fillColors = d => {
@@ -296,7 +301,6 @@ export default {
       this.statesGeojson = await $.getJSON(
         "./Nigerian_States.geojson",
         function(data) {
-          localStorage.setItem("nigeriaStates", JSON.stringify(data));
           return data;
         }
       );
@@ -324,15 +328,6 @@ export default {
         });
       }
     },
-    prepareRadius(value) {
-      if (value) {
-        if (value.indexOf(",")) {
-          return parseInt(value.split(",").join("")) * 30;
-        } else {
-          return parseInt(value) * 30;
-        }
-      }
-    },
     prepareFillColor(value) {
       if (value) {
         if (value.indexOf(",")) {
@@ -346,7 +341,6 @@ export default {
       this.centroids = await $.getJSON("./states_centroids.geojson", function(
         data
       ) {
-        localStorage.setItem("centroids", JSON.stringify(data));
         return data;
       });
     },
@@ -364,7 +358,6 @@ export default {
         }
       };
       this.infectedStates = await $.ajax(settings).done(function(response) {
-        localStorage.setItem("infectedStates", JSON.stringify(response));
         return response;
       });
     },
@@ -383,7 +376,6 @@ export default {
       };
 
       this.totalCases = await $.ajax(settings).done(function(response) {
-        localStorage.setItem("totalCases", JSON.stringify(response));
         return response;
       });
     },
@@ -415,12 +407,43 @@ export default {
   height: 80vh;
   display: grid;
   position: relative;
+  margin-left: 15px;
   grid-template-columns: 78% 20%;
   font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
     "Lucida Sans", Arial, sans-serif;
 }
 .someExtraClass {
   font-size: 3em;
+}
+.loader-container {
+  text-align: center;
+  position: absolute;
+  top: 55%;
+  left: 45%;
+  transform: translate(-50%, -50%);
+}
+
+.loader {
+  border: 16px solid #455a64; /* Light grey */
+  border-top: 16px solid #81c784; /* Blue */
+  border-radius: 50%;
+  width: 120px;
+  display: inline-block;
+  height: 120px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+#loading {
+  height: 80vh;
 }
 * {
   margin: 0;
