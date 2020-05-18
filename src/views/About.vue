@@ -35,7 +35,7 @@ export default {
   background: white;
   color: black;
   margin: 0 auto;
-  height: 70vh;
+  height: 80vh;
 }
 .about p {
   line-height: 1.5;

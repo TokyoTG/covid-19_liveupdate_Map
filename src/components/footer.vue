@@ -1,6 +1,6 @@
 <template>
   <div id="footer">
-    <p>&copy; 2020 Toyeeb Ganiu</p>
+    <p id="copyRight">&copy; 2020 Toyeeb Ganiu</p>
     <ul>
       <li>
         <a href="https://web.facebook.com/tboynoni.toyeeb" target="_blank">
@@ -28,6 +28,9 @@
         </a>
       </li>
     </ul>
+    <p id="top">
+      <a href="#nav">Back to top</a>
+    </p>
   </div>
 </template>
 <style lang="css" scoped>
@@ -45,14 +48,15 @@
   display: inline-block;
   padding: 10px;
   background: white;
-  border-radius: 50%;
+  border-radius: 100%;
   font-size: 0.9em;
   transition: 0.5s;
   margin-right: 10px;
   text-decoration: none;
   color: #1b5e20;
 }
-#footer li a:hover {
+#footer li a:hover,
+#top a:hover {
   font-weight: bold;
   background: #81c784;
   color: white;
@@ -60,12 +64,22 @@
 #footer {
   margin-top: 15px;
   padding: 10px 15px;
+  grid-template-columns: 30% 70%;
+  display: grid;
   background: #455a64;
 }
-#footer p {
-  text-align: left;
+#copyRight {
   color: white;
   padding: 5px;
-  font-size: 1em;
+  font-size: 0.8em;
+}
+
+#top a {
+  color: #1b5e20;
+  padding: 5px 10px;
+  margin-bottom: 10px;
+  background: white;
+  border-radius: 10px;
+  text-decoration: none;
 }
 </style>
